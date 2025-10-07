@@ -1,0 +1,38 @@
+name: API Tests (disabled)
+
+# This workflow is for showcase purposes only.
+# It is disabled and will not run automatically.
+# You can see how CI would look in a real project.
+
+on:
+  workflow_dispatch: # manual trigger only (can be removed for full disable)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v4
+
+      # Set up JDK 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # Cache Maven local repository
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      # Run API tests (requires real secrets)
+      - name: Run API tests
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}          # DummyAPI base URL
+          APP_ID: ${{ secrets.DUMMYAPI_APP_ID }}     # Your App ID
+        run: mvn -B -DbaseUrl=${{ secrets.BASE_URL }} -DappId=${{ secrets.DUMMYAPI_APP_ID }} test
