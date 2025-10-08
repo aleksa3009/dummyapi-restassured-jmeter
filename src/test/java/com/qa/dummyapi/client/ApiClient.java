@@ -12,19 +12,41 @@ public class ApiClient {
         this.spec = spec;
     }
 
-    // GET /user/{id}
+    // USERS
+
+    // GET /user/{id} (default spec)
     public Response getUserById(String id) {
         return given().spec(spec)
                 .when().get("/user/{id}", id);
     }
 
-    // GET /post/{id}
+    // GET /user/{id} (override spec, e.g. per-test logging)
+    public Response getUserById(RequestSpecification overrideSpec, String id) {
+        return given().spec(overrideSpec)
+                .when().get("/user/{id}", id);
+    }
+
+    // GET /user?limit={limit} (default spec)
+    public Response getUsers(int limit) {
+        return given().spec(spec)
+                .when().get("/user?limit={limit}", limit);
+    }
+
+    // GET /user?limit={limit} (override spec, e.g. per-test logging)
+    public Response getUsers(RequestSpecification overrideSpec, int limit) {
+        return given().spec(overrideSpec)
+                .when().get("/user?limit={limit}", limit);
+    }
+
+    // POSTS
+
+    // GET /post/{id} (default spec)
     public Response getPostById(String id) {
         return given().spec(spec)
                 .when().get("/post/{id}", id);
     }
 
-    // GET /post?limit={limit}
+    // GET /post?limit={limit} (default spec)
     public Response getPosts(int limit) {
         return given().spec(spec)
                 .when().get("/post?limit={limit}", limit);
