@@ -4,7 +4,7 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aleksa.dummyapi</groupId>
+    <groupId>com.qa.dummyapi</groupId>
     <artifactId>dummyapi-tests</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -17,7 +17,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <!-- Default placeholder values for IntelliJ and local runs -->
+        <!-- Default placeholder values for local runs -->
         <baseUrl>https://dummyapi.io</baseUrl>
         <appId>dummy-app-id</appId>
     </properties>
@@ -66,18 +66,24 @@
 
     <build>
         <plugins>
-            <!-- Maven Surefire plugin to run tests -->
+            <!-- Maven Surefire plugin for running tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
                 <configuration>
+                    <!-- Keep one fork and reuse it for performance -->
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
+
+                    <!-- Pass system properties to tests -->
                     <systemPropertyVariables>
                         <baseUrl>${baseUrl}</baseUrl>
                         <appId>${appId}</appId>
                     </systemPropertyVariables>
+
+                    <!-- Fail build on test failures -->
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
         </plugins>
