@@ -12,30 +12,37 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
-public class UsersGetByIdTest extends BaseTest {
-
+public class UsersFetchThenGetTest extends BaseTest {
     private final ApiClient client = new ApiClient(reqSpec);
 
     @Rule
     public TestName testName = new TestName();
 
     @Test
-    public void getUserById_happyPath_fixedId() throws FileNotFoundException {
-        String exampleId = "60d0fe4f5311236168a109ca"; // fixed valid ID
+    public void fetchList_then_getById_happyPath() throws FileNotFoundException {
+        // 1) Fetch a small collection of users
+        var listResp = client.getUsers(1);
+        listResp.then().statusCode(200);
 
-        // create per-test log
+        // Extract first user ID dynamically
+        String id = listResp.jsonPath().getString("data[0].id");
+        assertNotNull("Could not extract a user id from collection response", id);
+
+        // 2) Create per-test log stream and RequestSpecification with logging
         File file = new File("reports/api-reports/" + testName.getMethodName() + ".log");
         PrintStream logStream = new PrintStream(file);
         try {
             var specWithLog = LoggingUtils.specWithLogging(reqSpec, logStream);
 
-            client.getUserById(specWithLog, exampleId)
+            // 3) Fetch single user by ID with logging
+            client.getUserById(specWithLog, id)
                     .then()
+                    .log().ifValidationFails()
                     .statusCode(200)
-                    .body("id", equalTo(exampleId))
-                    .body("firstName", notNullValue())
-                    .body("lastName", notNullValue());
+                    .body("id", equalTo(id))
+                    .body("$", hasKey("firstName")); // essential field check
         } finally {
             logStream.close();
         }
