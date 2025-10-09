@@ -12,7 +12,7 @@ public class ApiClient {
         this.spec = spec;
     }
 
-    // USERS
+    // ===== USERS =====
 
     // GET /user/{id} (default spec)
     public Response getUserById(String id) {
@@ -20,7 +20,7 @@ public class ApiClient {
                 .when().get("/user/{id}", id);
     }
 
-    // GET /user/{id} (override spec, e.g. per-test logging)
+    // GET /user/{id} (override spec)
     public Response getUserById(RequestSpecification overrideSpec, String id) {
         return given().spec(overrideSpec)
                 .when().get("/user/{id}", id);
@@ -32,13 +32,13 @@ public class ApiClient {
                 .when().get("/user?limit={limit}", limit);
     }
 
-    // GET /user?limit={limit} (override spec, e.g. per-test logging)
+    // GET /user?limit={limit} (override spec)
     public Response getUsers(RequestSpecification overrideSpec, int limit) {
         return given().spec(overrideSpec)
                 .when().get("/user?limit={limit}", limit);
     }
 
-    // POSTS
+    // ===== POSTS =====
 
     // GET /post/{id} (default spec)
     public Response getPostById(String id) {
@@ -46,9 +46,35 @@ public class ApiClient {
                 .when().get("/post/{id}", id);
     }
 
+    // GET /post/{id} (override spec)
+    public Response getPostById(RequestSpecification overrideSpec, String id) {
+        return given().spec(overrideSpec)
+                .when().get("/post/{id}", id);
+    }
+
     // GET /post?limit={limit} (default spec)
     public Response getPosts(int limit) {
         return given().spec(spec)
                 .when().get("/post?limit={limit}", limit);
+    }
+
+    // GET /post?limit={limit} (override spec)
+    public Response getPosts(RequestSpecification overrideSpec, int limit) {
+        return given().spec(overrideSpec)
+                .when().get("/post?limit={limit}", limit);
+    }
+
+    // ===== Optional: POST creation endpoint =====
+    // (Use later only if API docs confirm /post/create or /post)
+    public Response createPost(String jsonBody) {
+        return given().spec(spec)
+                .body(jsonBody)
+                .when().post("/post/create");
+    }
+
+    public Response createPost(RequestSpecification overrideSpec, String jsonBody) {
+        return given().spec(overrideSpec)
+                .body(jsonBody)
+                .when().post("/post/create");
     }
 }
