@@ -1,0 +1,9 @@
+# postId,expectedStatus
+# valid postId → should return 200
+60d0fe4f5311236168a10a1c,200
+
+# non-existing but valid format → should return 404
+000000000000000000000000,404
+
+# invalid format → should return 400
+bad-id-!!!,400
