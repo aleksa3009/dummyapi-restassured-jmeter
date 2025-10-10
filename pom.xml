@@ -11,19 +11,20 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <restassured.version>4.5.1</restassured.version>
+        <restassured.version>5.3.0</restassured.version>
         <junit.version>4.13.2</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <slf4j.version>1.7.36</slf4j.version>
         <jackson.version>2.15.2</jackson.version>
+        <allure.version>2.21.0</allure.version>
+        <allure.plugin.version>2.11.2</allure.plugin.version>
 
-        <!-- Default placeholder values for local runs -->
         <baseUrl>https://dummyapi.io</baseUrl>
         <appId>dummy-app-id</appId>
     </properties>
 
     <dependencies>
-        <!-- REST Assured for API testing -->
+        <!-- REST Assured core -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -31,7 +32,15 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JSON Path / Hamcrest matchers -->
+        <!-- JSON Schema Validator module for Rest Assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${restassured.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Hamcrest matchers -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
@@ -47,7 +56,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Jackson for JSON parsing/mapping -->
+        <!-- Jackson for JSON parsing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -55,11 +64,19 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Simple logger for REST Assured -->
+        <!-- SLF4J simple logger -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allure JUnit4 -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit4</artifactId>
+            <version>${allure.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -72,21 +89,24 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
                 <configuration>
-                    <!-- Keep one fork and reuse it for performance -->
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
 
-                    <!-- Pass system properties to tests -->
                     <systemPropertyVariables>
                         <baseUrl>${baseUrl}</baseUrl>
                         <appId>${appId}</appId>
                     </systemPropertyVariables>
 
-                    <!-- Fail build on test failures -->
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
+
+            <!-- Allure Maven plugin -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure.plugin.version}</version>
+            </plugin>
         </plugins>
     </build>
-
 </project>
