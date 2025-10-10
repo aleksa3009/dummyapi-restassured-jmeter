@@ -2,14 +2,14 @@ name: API Tests (disabled)
 
 # This workflow is for showcase purposes only.
 # It is disabled and will not run automatically.
-# You can see how CI would look in a real project.
-
+# Manual trigger via workflow_dispatch.
 on:
-  workflow_dispatch: # manual trigger only (can be removed for full disable)
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       # Checkout repository
       - uses: actions/checkout@v4
@@ -33,6 +33,20 @@ jobs:
       # Run API tests (requires real secrets)
       - name: Run API tests
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}          # DummyAPI base URL
-          APP_ID: ${{ secrets.DUMMYAPI_APP_ID }}     # Your App ID
+          BASE_URL: ${{ secrets.BASE_URL }}
+          APP_ID: ${{ secrets.DUMMYAPI_APP_ID }}
         run: mvn -B -DbaseUrl=${{ secrets.BASE_URL }} -DappId=${{ secrets.DUMMYAPI_APP_ID }} test
+
+      # Upload Allure results
+      - name: Upload allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
+
+      # Upload Surefire reports
+      - name: Upload surefire reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
