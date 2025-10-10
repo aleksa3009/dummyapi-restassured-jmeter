@@ -3,9 +3,11 @@ package com.qa.dummyapi.tests.posts;
 import com.qa.dummyapi.base.BaseTest;
 import com.qa.dummyapi.client.ApiClient;
 import com.qa.dummyapi.util.LoggingUtils;
+import com.qa.dummyapi.util.SchemaValidationUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import io.restassured.response.Response;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,11 +38,18 @@ public class PostsGetByIdTest extends BaseTest {
         try {
             var specWithLog = LoggingUtils.specWithLogging(reqSpec, logStream);
 
-            client.getPostById(specWithLog, exampleId)
-                    .then()
+            // execute request
+            Response res = client.getPostById(specWithLog, exampleId);
+
+            // basic response assertions
+            res.then()
                     .statusCode(200)
                     .body("id", equalTo(exampleId))
                     .body("$", hasKey("text"));
+
+            // JSON schema validation
+            SchemaValidationUtils.validate(res, "schemas/post-schema.json");
+
         } finally {
             logStream.close();
         }
