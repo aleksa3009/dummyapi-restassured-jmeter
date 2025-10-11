@@ -1,0 +1,28 @@
+name: JMeter Smoke Test (disabled)
+
+on:
+  workflow_dispatch: # manual trigger only
+  # note: this file is intentionally disabled and not active by default
+
+jobs:
+  jmeter-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install JMeter
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jmeter
+
+      - name: Run JMeter smoke test
+        run: |
+          chmod +x scripts/run_jmeter.sh
+          ./scripts/run_jmeter.sh
+
+      - name: Upload JMeter reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-reports
+          path: performance-tests/reports
